@@ -1,11 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { FcFullTrash } from 'react-icons/fc';
 
-const ContactItem = ({ name, number }) => {
+import { deleteContact } from 'redux/contactsSlice';
+import { DeleteBtn } from './ContactItem.styled';
+
+const ContactItem = ({ contact }) => {
+  const dispatch = useDispatch();
+
+  const handleDelete = () => dispatch(deleteContact(contact.id));
   return (
     <>
-      <td>{name}</td>
-      <td>{number}</td>
+      <td>{contact.name}</td>
+      <td>{contact.number}</td>
+      <td>
+        <DeleteBtn type="button" onClick={handleDelete}>
+          <FcFullTrash size={30} />
+        </DeleteBtn>
+      </td>
     </>
   );
 };
@@ -13,6 +26,9 @@ const ContactItem = ({ name, number }) => {
 export default ContactItem;
 
 ContactItem.propTypes = {
-  name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
+  contact: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+  }),
 };

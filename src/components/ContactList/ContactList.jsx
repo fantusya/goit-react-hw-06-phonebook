@@ -1,15 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { FcConferenceCall, FcPhoneAndroid, FcFullTrash } from 'react-icons/fc';
+import { FcConferenceCall, FcPhoneAndroid } from 'react-icons/fc';
+import { useSelector } from 'react-redux';
+
+import { getContacts, getFilter } from 'redux/selectors';
 import ContactItem from 'components/ContactItem';
 import {
   ContactListTable,
   ContactListTbody,
   ContactListThead,
-  DeleteBtn,
 } from './ContactList.styled';
 
-const ContactList = ({ contacts, onDeleteContact }) => {
+function getVisibleContacts(contacts, filterValue) {
+  return contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filterValue.toLowerCase())
+  );
+}
+
+const ContactList = () => {
+  const contacts = useSelector(getContacts);
+  const filterValue = useSelector(getFilter);
+  const visibleContacts = getVisibleContacts(contacts, filterValue);
+
   return (
     <ContactListTable>
       <ContactListThead>
@@ -23,17 +34,9 @@ const ContactList = ({ contacts, onDeleteContact }) => {
         </tr>
       </ContactListThead>
       <ContactListTbody>
-        {contacts.map(contact => (
+        {visibleContacts.map(contact => (
           <tr key={contact.id}>
-            <ContactItem name={contact.name} number={contact.number} />
-            <td>
-              <DeleteBtn
-                type="button"
-                onClick={() => onDeleteContact(contact.id)}
-              >
-                <FcFullTrash size={30} />
-              </DeleteBtn>
-            </td>
+            <ContactItem contact={contact} />
           </tr>
         ))}
       </ContactListTbody>
@@ -42,8 +45,3 @@ const ContactList = ({ contacts, onDeleteContact }) => {
 };
 
 export default ContactList;
-
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onDeleteContact: PropTypes.func.isRequired,
-};
