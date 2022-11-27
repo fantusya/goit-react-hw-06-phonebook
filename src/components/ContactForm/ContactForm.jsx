@@ -2,6 +2,7 @@ import { Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import shortid from 'shortid';
 
 import { addContact } from 'redux/contactsSlice';
 import { getContacts } from 'redux/selectors';
@@ -35,19 +36,24 @@ const ContactForm = () => {
 
   const contacts = useSelector(getContacts);
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = ({ name, number }, { resetForm }) => {
     const isNameExistInPhonebook = contacts.some(
-      contact => contact.name.toLowerCase() === values.name.toLowerCase()
+      contact => contact.name.toLowerCase() === name.toLowerCase()
     );
-
     if (isNameExistInPhonebook) {
-      toast.error(`${values.name} is already in contacts`, {
+      toast.error(`${name} is already in contacts`, {
         pauseOnHover: false,
       });
       return;
     }
 
-    dispatch(addContact(values));
+    const contact = {
+      name,
+      number,
+      id: shortid.generate(),
+    };
+
+    dispatch(addContact(contact));
     resetForm();
   };
 

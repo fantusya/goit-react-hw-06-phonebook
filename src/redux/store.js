@@ -17,22 +17,9 @@ const persistConfig = { key: 'phonebook', storage };
 
 export const persistedReducer = persistReducer(persistConfig, contactsReducer);
 
-// export const store = configureStore({
-//   reducer: {
-//     contacts: persistedReducer,
-//   },
-//   middleware(getDefaultMiddleware) {
-//     return getDefaultMiddleware({
-//       serializableCheck: {
-//         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-//       },
-//     });
-//   },
-// });
-
 export const store = configureStore({
   reducer: {
-    contactsAll: persistedReducer,
+    phoneContacts: persistedReducer,
     filter: filterReducer,
   },
   middleware(getDefaultMiddleware) {
